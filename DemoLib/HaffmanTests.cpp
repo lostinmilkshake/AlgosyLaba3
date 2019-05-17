@@ -1,6 +1,7 @@
 #include <iostream>
 #include <gtest/gtest.h>
-#include "HaffmanClass.h"
+#include "pch.h"
+#include "\Users\Dogge!\source\repos\AlgosyLaba3\AlgosyLaba3\DemoLib\HaffmanClass.h"
 
 using namespace std;
 
@@ -29,4 +30,12 @@ TEST(HaffManTest, ThirdTest) {
     newString = testValue.codding();
     newString2 = testValue.haffmanDecrypt(newString);
     ASSERT_EQ(input, newString2);
+}
+
+TEST(HaffManTest, enocdeTest) {
+	string input = "it is test string";
+	string newString;
+	HaffmanAlgothrim testValue(input);
+	newString = testValue.codding();
+	ASSERT_EQ("001011100100011011011000011100001100100110001010", newString);
 }

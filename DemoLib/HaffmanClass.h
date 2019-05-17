@@ -2,17 +2,20 @@
 #define HaffmanClass_h
 
 #include <iostream>
-#include "RedBlackTreeClass.h"
+#include "\Users\Dogge!\source\repos\AlgosyLaba3\AlgosyLaba3\MyClasses\RedBlackTreeClass.h"
+#include <iomanip>
 
 using namespace std;
 
 class HaffmanNode {
+private:
     char symbol; 
     size_t frequence;
     HaffmanNode *right;
     HaffmanNode *left;
     string code;
-    HaffmanNode() {
+public:
+	HaffmanNode() {
         symbol = '\0';
         frequence = 0;
         code = "";
@@ -25,27 +28,22 @@ class HaffmanNode {
         this->right = right;
         this->left = left;
     }
-    void fillCode(string code);
     friend class HaffmanAlgothrim;
 };
 
-void HaffmanNode::fillCode(string newCode) { //Going through each element
-    while (this != nullptr) {
-        this->left->fillCode(newCode + "0"); //Adding 0 to the left elements
-        this->right->fillCode(newCode + "1"); //Adding 1 to the right elements
-        this->code = newCode;
-        if (this->symbol != '\0') {
-            cout << setfill(' ') << "|"  << setw(7) << this->symbol << "|" << setw(10) << this->frequence << "|" << setw(10)  << this->code << "|" << endl;
-        }
-        return;
-    }
-}
 
 class HaffmanAlgothrim {
+private:
+	MyMap<char, size_t> myMap;
+	string inputString;
+	MyList<HaffmanNode*> priorityOrder;
+	MyMap<char, string> mapCodes;
+	void transform();
+	void filling(Node<char, size_t>* element);
+	void insertInOrder(HaffmanNode* newHaffmanNode);
+	void fillCodes();
+	void fillCode(HaffmanNode* top, string code);
 public:
-    RedBlackTree<char, size_t> myMap;
-    string inputString;
-    MyList<HaffmanNode *> priorityOrder;
     HaffmanAlgothrim(string input) {
         Node<char, size_t> *helpNode;
         inputString = input;
@@ -61,13 +59,10 @@ public:
         }
         transform();
     }
-    void transform();
-    void filling(Node<char, size_t> *element);
-    void insertInOrder(HaffmanNode *newHaffmanNode);
+
     string codding();
-    void fillCodes();
     string haffmanDecrypt(string encodedString);
-    void incodeMessage(HaffmanNode *top, char symbol, size_t *weight, string *codedString);
+
 };
 
 void HaffmanAlgothrim::transform() { //Filling the elements from MyMap into MyList
@@ -118,7 +113,10 @@ string HaffmanAlgothrim::codding() { //Encryptig message in saving codes for eac
     fillCodes(); //Finding the code of each element
     cout << "Encoded message: ";
     for (size_t i = 0; i < inputString.size(); i++) { //Encoding the message
-        incodeMessage(priorityOrder.getHead()->getData(), inputString[i], &weight, &codedString);
+		Node<char, string>* newNode;
+		newNode = mapCodes.find(inputString[i]);
+		codedString += newNode->returnValue();
+		weight += newNode->returnValue().size();
     }
     cout << codedString << " weight " << weight << " bits" << endl;
     cout << "Compression ratio " <<   (( (double) weight )/ ((double) (8 * inputString.size())) ) * 100 << "%" << endl;
@@ -130,22 +128,23 @@ void HaffmanAlgothrim::fillCodes() { //Finding the code of each element
     //Displaying the frame of the table
     cout  << "|" << setw(7) << "Symbol " << "|" << setw(10) << "Frequence " << "|" << setw(10)  << "Code " << "|" << endl;
     cout   << setfill('_') << "|" << setw(7)  << "" << "|" << setw(10) << "" << "|" << setw(10)  << "" << "|" << endl;
-    top->fillCode(""); //Going through each element
+    fillCode(top, ""); //Going through each element
 }
 
-void HaffmanAlgothrim::incodeMessage(HaffmanNode *top, char symbol, size_t *weight, string *codedString) {
-    while (top != nullptr && top->symbol != symbol) { //Going trough the tree
-        incodeMessage(top->left, symbol, weight, codedString);
-        incodeMessage(top->right, symbol, weight, codedString);
-        return;
-    }
-    if (top != nullptr) {
-        if (symbol == top->symbol) {
-            *codedString += top->code; //Adding the code to the displayed string
-            *weight += top->code.size(); //Counting the weight of the coded string
+void HaffmanAlgothrim::fillCode(HaffmanNode *top, string newCode) { //Going through each element
+    while (top != nullptr) {
+        fillCode(top->left, newCode + "0"); //Adding 0 to the left elements
+        fillCode(top->right, newCode + "1"); //Adding 1 to the right elements
+		//this->code = newCode;
+        if (top->symbol != '\0') {
+			mapCodes.insert(top->symbol, newCode);
+            cout << setfill(' ') << "|"  << setw(7) << top->symbol << "|" << setw(10) 
+				<< top->frequence << "|" << setw(10)  << newCode << "|" << endl;
         }
-    }
+        return;
+	}
 }
+
 
 string HaffmanAlgothrim::haffmanDecrypt(string encodedString) { //Decrypting the string
     HaffmanNode *top = priorityOrder.getHead()->getData();
