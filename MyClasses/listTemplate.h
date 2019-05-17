@@ -27,8 +27,8 @@ public:
         return next;
     }
     friend class MyList<T>;
-    friend class HaffmanAlgothrim;
-    friend class HaffmanNode;
+    friend class HuffmanAlgothrim;
+    friend class HuffmanNode;
 };
 
 // Объявление класса списка

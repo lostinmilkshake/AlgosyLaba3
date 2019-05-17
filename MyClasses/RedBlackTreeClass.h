@@ -37,7 +37,7 @@ public:
 	MyList<T>* get_keys(); //Getting all the keys from the map
 	MyList<V>* get_values(); //Getting all the values from the map
 	Node<T, V>* find(T key); //Finding the element with the key
-	friend class HaffmanAlgothrim;
+	friend class HuffmanAlgothrim;
 };
 
 template <class T, class V>
@@ -62,7 +62,7 @@ public:
 		return value;
 	}
 	friend class MyMap<T, V>;
-	friend class HaffmanAlgothrim;
+	friend class HuffmanAlgothrim;
 };
 
 //Defining Node methods

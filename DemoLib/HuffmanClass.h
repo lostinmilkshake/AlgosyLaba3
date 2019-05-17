@@ -1,5 +1,5 @@
-#ifndef HaffmanClass_h
-#define HaffmanClass_h
+#ifndef HuffmanClass_h
+#define HuffmanClass_h
 
 #include <iostream>
 #include "\Users\Dogge!\source\repos\AlgosyLaba3\AlgosyLaba3\MyClasses\RedBlackTreeClass.h"
@@ -7,44 +7,42 @@
 
 using namespace std;
 
-class HaffmanNode {
+class HuffmanNode {
 private:
     char symbol; 
     size_t frequence;
-    HaffmanNode *right;
-    HaffmanNode *left;
-    string code;
+    HuffmanNode *right;
+    HuffmanNode *left;
 public:
-	HaffmanNode() {
+	HuffmanNode() {
         symbol = '\0';
         frequence = 0;
-        code = "";
         right = nullptr;
         left = nullptr;
     }
-    HaffmanNode(char symbol, size_t frequence, HaffmanNode *right = nullptr, HaffmanNode *left = nullptr) {
+    HuffmanNode(char symbol, size_t frequence, HuffmanNode *right = nullptr, HuffmanNode *left = nullptr) {
         this->symbol = symbol;
         this->frequence = frequence;
         this->right = right;
         this->left = left;
     }
-    friend class HaffmanAlgothrim;
+    friend class HuffmanAlgothrim;
 };
 
 
-class HaffmanAlgothrim {
+class HuffmanAlgothrim {
 private:
 	MyMap<char, size_t> myMap;
 	string inputString;
-	MyList<HaffmanNode*> priorityOrder;
+	MyList<HuffmanNode*> priorityOrder;
 	MyMap<char, string> mapCodes;
 	void transform();
 	void filling(Node<char, size_t>* element);
-	void insertInOrder(HaffmanNode* newHaffmanNode);
+	void insertInOrder(HuffmanNode* newHuffmanNode);
 	void fillCodes();
-	void fillCode(HaffmanNode* top, string code);
+	void fillCode(HuffmanNode* top, string code);
 public:
-    HaffmanAlgothrim(string input) {
+    HuffmanAlgothrim(string input) {
         Node<char, size_t> *helpNode;
         inputString = input;
         cout << "Input string is " << inputString << " weight " << 8 * inputString.size() << " bits" << endl;
@@ -61,53 +59,53 @@ public:
     }
 
     string codding();
-    string haffmanDecrypt(string encodedString);
+    string HuffmanDecrypt(string encodedString);
 
 };
 
-void HaffmanAlgothrim::transform() { //Filling the elements from MyMap into MyList
+void HuffmanAlgothrim::transform() { //Filling the elements from MyMap into MyList
     Node<char, size_t> *element = myMap.returnRoot();
     filling(element);
 }
 
-void HaffmanAlgothrim::filling(Node<char, size_t> *element) { //Going through every map element
+void HuffmanAlgothrim::filling(Node<char, size_t> *element) { //Going through every map element
     while (element != nullptr) {
         filling(element->left);
         filling(element->right);
-        HaffmanNode *newHaffmanNode = new HaffmanNode(element->key, element->value); //Creating new haffman node
-        insertInOrder(newHaffmanNode);
+        HuffmanNode *newHuffmanNode = new HuffmanNode(element->key, element->value); //Creating new Huffman node
+        insertInOrder(newHuffmanNode);
         return;
     }
  }
 
-void HaffmanAlgothrim::insertInOrder (HaffmanNode *newHaffmanNode) { //Deciding where to put new element in list
-    Element<HaffmanNode*> *helpNode = priorityOrder.getHead();
+void HuffmanAlgothrim::insertInOrder (HuffmanNode *newHuffmanNode) { //Deciding where to put new element in list
+    Element<HuffmanNode*> *helpNode = priorityOrder.getHead();
     size_t i = 0;
-    while (helpNode != nullptr && helpNode->data->frequence < newHaffmanNode->frequence) { //Finding where to put this element
+    while (helpNode != nullptr && helpNode->data->frequence < newHuffmanNode->frequence) { //Finding where to put this element
         helpNode=helpNode->next;
         i++;
     }
     if (helpNode == nullptr) { //If it is the end of the list, then insert in the end
-        priorityOrder.push_back(newHaffmanNode);
+        priorityOrder.push_back(newHuffmanNode);
     }
     else { //Else insert before element with higher priority
-        priorityOrder.insert(newHaffmanNode, i);
+        priorityOrder.insert(newHuffmanNode, i);
     }
 }
 
-string HaffmanAlgothrim::codding() { //Encryptig message in saving codes for each elemenet
-    HaffmanNode *right, *left, *top;
+string HuffmanAlgothrim::codding() { //Encryptig message in saving codes for each elemenet
+    HuffmanNode *right, *left, *top;
     string codedString = "";
     size_t weight = 0;
-    while (priorityOrder.get_size() != 1) { //Creating Haffman tree using MyList
-        Element<HaffmanNode*> helpElement;
+    while (priorityOrder.get_size() != 1) { //Creating Huffman tree using MyList
+        Element<HuffmanNode*> helpElement;
         helpElement = priorityOrder.at(0);
         right = helpElement.data;
         priorityOrder.pop_front(); //Taking first element and putting it as a right son
         helpElement = priorityOrder.at(0);
         left = helpElement.data;
         priorityOrder.pop_front(); //Taking first element and putting it as a left son
-        top = new HaffmanNode('\0', left->frequence + right->frequence, right, left);
+        top = new HuffmanNode('\0', left->frequence + right->frequence, right, left);
         insertInOrder(top); //Insert this "subtree" in MyList
     }
     fillCodes(); //Finding the code of each element
@@ -123,15 +121,15 @@ string HaffmanAlgothrim::codding() { //Encryptig message in saving codes for eac
     return codedString;
 }
 
-void HaffmanAlgothrim::fillCodes() { //Finding the code of each element
-    HaffmanNode *top = priorityOrder.getHead()->getData();
+void HuffmanAlgothrim::fillCodes() { //Finding the code of each element
+    HuffmanNode *top = priorityOrder.getHead()->getData();
     //Displaying the frame of the table
     cout  << "|" << setw(7) << "Symbol " << "|" << setw(10) << "Frequence " << "|" << setw(10)  << "Code " << "|" << endl;
     cout   << setfill('_') << "|" << setw(7)  << "" << "|" << setw(10) << "" << "|" << setw(10)  << "" << "|" << endl;
     fillCode(top, ""); //Going through each element
 }
 
-void HaffmanAlgothrim::fillCode(HaffmanNode *top, string newCode) { //Going through each element
+void HuffmanAlgothrim::fillCode(HuffmanNode *top, string newCode) { //Going through each element
     while (top != nullptr) {
         fillCode(top->left, newCode + "0"); //Adding 0 to the left elements
         fillCode(top->right, newCode + "1"); //Adding 1 to the right elements
@@ -146,8 +144,8 @@ void HaffmanAlgothrim::fillCode(HaffmanNode *top, string newCode) { //Going thro
 }
 
 
-string HaffmanAlgothrim::haffmanDecrypt(string encodedString) { //Decrypting the string
-    HaffmanNode *top = priorityOrder.getHead()->getData();
+string HuffmanAlgothrim::HuffmanDecrypt(string encodedString) { //Decrypting the string
+    HuffmanNode *top = priorityOrder.getHead()->getData();
     string decodedString = "";
     for (size_t i = 0; i<encodedString.size(); i++) { //Going through each element
         if (encodedString[i] == '0') { //If the element is 0, going left
@@ -165,4 +163,4 @@ string HaffmanAlgothrim::haffmanDecrypt(string encodedString) { //Decrypting the
     return decodedString;
 }
 
-#endif /* HaffmanClass_h */
+#endif /* HuffmanClass_h */
